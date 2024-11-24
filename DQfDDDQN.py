@@ -23,8 +23,20 @@ class DQfDDDQN:
     DQfDDQN is an implementation of Deep Q-learning from Demonstrations(Learning from Demonstrations for RealWorld
     Reinforcement Learning)'s Version-1.
     """
+    
+
 
     def __init__(self, env, config):
+        # # Check and close existing session if it exists
+        # if hasattr(self, 'sess') and self.sess is not None:
+        #     self.sess.close()
+        #     print("Previous TensorFlow session closed.")
+        
+        # # Reset the default graph to avoid variable collisions
+        # tf.compat.v1.reset_default_graph()
+        
+        # Initialize a new session
+        self.sess = tf.InteractiveSession()
         self.sess = tf.InteractiveSession()
         self.config = config
         # init experience replay

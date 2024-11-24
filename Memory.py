@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 
 np.random.seed(1)
-tf.set_random_seed(1)
+tf.compat.v1.set_random_seed(1)
 
 
 # Sampling should not execute when the tree is not full !!!
@@ -28,6 +28,9 @@ class SumTree(object):
         if self.data_pointer >= self.capacity:
             self.full = True
             self.data_pointer = self.data_pointer % self.capacity + self.permanent_data  # make sure demo data permanent
+
+    
+
 
     def update(self, tree_idx, p):
         change = p - self.tree[tree_idx]
@@ -75,6 +78,7 @@ class Memory(object):
         return len(self.tree)
 
     def full(self):
+
         return self.tree.full
 
     def store(self, transition):
@@ -85,8 +89,13 @@ class Memory(object):
 
     def sample(self, n):
         assert self.full()
+        # if not self.full():
+        #     raise ValueError(f"Buffer not full: {len(self.data)} / {self.capacity}")
+
         b_idx = np.empty((n,), dtype=np.int32)
-        b_memory = np.empty((n, self.tree.data[0].size), dtype=object)
+        #b_memory = np.empty((n, self.tree.data[0].size), dtype=object)
+        b_memory = np.empty((n, len(self.tree.data[0])), dtype=object)
+
         ISWeights = np.empty((n, 1))
         pri_seg = self.tree.total_p / n
         self.beta = np.min([1., self.beta + self.beta_increment_per_sampling])
@@ -111,7 +120,6 @@ class Memory(object):
         ps = np.power(clipped_errors, self.alpha)
         for ti, p in zip(tree_idxes, ps):
             self.tree.update(ti, p)
-
 
 
 

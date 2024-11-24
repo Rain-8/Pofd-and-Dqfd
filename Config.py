@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 import os
 
@@ -11,10 +12,10 @@ class Config:
     START_TRAINING = 1000  # experience replay buffer size
     BATCH_SIZE = 64  # size of minibatch
     UPDATE_TARGET_NET = 10000  # update eval_network params every 200 steps
-    LEARNING_RATE = 0.001
+    LEARNING_RATE = 0.0005
     DEMO_RATIO = 0.1
     LAMBDA = [1.0, 0.0, 1.0, 10e-5]  # for [loss_dq, loss_n_dq, loss_jeq, loss_l2]
-    PRETRAIN_STEPS = 5000  # 750000
+    PRETRAIN_STEPS = 1400 # 750000
     MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'model/DQfD_model')
     DEMO_DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'demo.p')
 
@@ -23,7 +24,12 @@ class Config:
     iteration = 5
     episode = 300  # 300 games per iteration
     trajectory_n = 10  # for n-step TD-loss (both demo data and generated data)
-
+    EPSILON = 0.1  # Add this line to define the epsilon value for PPO clipping
+    # Regularization weights
+    lambda1 = 0.1  # Weight for discriminator-based reward
+    lambda2 = 0.3  # Weight for entropy regularization
+    # Discriminator parameters
+    discriminator_epochs = 5  # Number of epochs for discriminator training
 
 class DDQNConfig(Config):
     demo_mode = 'get_demo'
@@ -33,4 +39,6 @@ class DQfDConfig(Config):
     demo_mode = 'use_demo'
     demo_num = int(Config.BATCH_SIZE * Config.DEMO_RATIO)
 
-
+class POfDV2Config(Config):
+    demo_mode='use demo'
+    demo_num = int(Config.BATCH_SIZE * Config.DEMO_RATIO)

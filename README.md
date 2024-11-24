@@ -70,3 +70,17 @@ Finally, we can use this function to show the difference between Double DQN and 
 
 
 
+
+##POFD vs DQFD
+
+We use Google Deepmind's reasearch on - "Deep Q-learning from Demonstrations" and "Policy Optimization with Demonstrations" from ICML 2018 on the cartpole environment.
+
+We have structured our model as follows- 
+```
+   
+    ├── DQfD_CartPole.py         # Main script
+    ├── demo.p                   # Expert demonstration data obtained from DDQN
+    ├── model                    # Folder to save trained models
+    ├── requirements.txt         # List of dependencies
+    └── README.md                # Documentation
+```
