@@ -138,7 +138,7 @@ Policy Gradient Update:
 ```
 This aligns with -
 
-<img src="/images/gradient.png" alt="Equation" width="600" height="100"/>
+<img src="/images/gradient.png" alt="Equation" width="600" height="50"/>
 
 Here:
 - \( Q'(s, a) \) is represented by discounted rewards.
