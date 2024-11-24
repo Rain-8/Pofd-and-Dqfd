@@ -136,9 +136,9 @@ Policy Gradient Update:
     })
 
 ```
-\[
-\hat{E}_{D_i} \left[ \nabla_{\theta} \log \pi_{\theta}(a|s) Q'(s, a) \right] - \lambda_2 \nabla_{\theta} H(\pi_{\theta_i})
-\]
+This aligns with -
+
+<img src="/images/gradient.png" alt="Equation" width="600" height="100"/>
 
 Here:
 - \( Q'(s, a) \) is represented by discounted rewards.
