@@ -33,7 +33,8 @@ We have structured our model as follows-
     ├── pofd_vs_dqfd.py           # Script for comparison between POfD and DQfD
     ├── pofd.p                    # Pickle file storing POfD-specific data
     ├── pofdv2.py                 # Implementation of the POfD algorithm
-    └── README.md                 # Documentation describing the repository and how to use it
+    ├── README.md                 # Documentation describing the repository and how to use it
+    └── requirements.txt          # To be installed in specified versions
 ```
 We try to obtain the results demonstrated in POFD for cartpole environment.
 
