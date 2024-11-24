@@ -43,7 +43,8 @@ For POFD, we did not find any existing implementation, so we implemented our own
 
 Algorithm from paper:
 
-![figure_1](/images/pofd_algorithm.png)
+
+<img src="/images/pofd_algorithm.png" alt="POfD Algorithm" width="400" />
 
 Our implementation:
 
@@ -53,10 +54,12 @@ The class implements the following main parts of the algorithm:
 
 Inputs:
 Expert Demonstrations (demo_transitions): These are pre-collected expert trajectories passed into the class.
+
 Environment (env): The environment in which the agent operates, e.g., CartPole.
+
 Policy and Discriminator Networks: These are two neural networks:
-Policy Network (policy_network): For selecting actions.
-Discriminator Network (discriminator_network): To distinguish between expert and agent-generated transitions.
+- Policy Network (policy_network): For selecting actions.
+- Discriminator Network (discriminator_network): To distinguish between expert and agent-generated transitions.
 
 Initialization:
 
@@ -144,8 +147,11 @@ Here:
 Overall Workflow
 
 1. Pretrain the Policy:
+
 - Use expert demonstrations (D_E) to initialize the policy network.
+
 2. Training Loop:
+
    - Sample Trajectories: Generate trajectories (D_i) using the current policy.
    - Update the Discriminator: Train the discriminator using expert and agent trajectories.
    - Update Rewards: Modify rewards based on the discriminator output.
@@ -154,44 +160,61 @@ Overall Workflow
 Alignment with the Algorithm
 
 1. Expert Demonstrations (D_E):
-- Passed as `demo_transitions` during initialization.
+
+- Passed as demo_transitions during initialization.
+
 2. Policy Update:
+
 - Implements PPO with entropy regularization (λ_2).
 - Adjusts policy using discriminator-based reward modification (λ_1).
+
 3. Discriminator Update:
+
 - Distinguishes between expert and agent trajectories.
 - Provides improved rewards for training the policy.
 
 
 Paper results for Cartpole:
 
-1. Generating Demonstrations
-Single Imperfect Trajectory:
-• Only one imperfect trajectory is used as a demonstration for POfD. This trajectory is not optimal or fully trained, simulating a realistic scenario where perfect expert demonstrations may not be available.
-• Using a single trajectory tests the ability of POfD to learn effectively from limited and imperfect data.
-How the Demonstration is Generated:
-• The agent is trained insufficiently using TRPO (Trust Region Policy Optimization) in a dense environment (where rewards are abundant and provide more feedback).
-• After this partial training, a random trajectory is sampled from the agent’s behavior.
-• This trajectory becomes the demonstration used for training POfD.
+Generating Demonstrations:
 
-2. Evaluation Metrics
+Single Imperfect Trajectory:
+
+- Only one imperfect trajectory is used as a demonstration for POfD. This trajectory is not optimal or fully trained, simulating a realistic scenario where perfect expert demonstrations may not be available.
+
+- Using a single trajectory tests the ability of POfD to learn effectively from limited and imperfect data.
+
+How the Demonstration is Generated:
+
+- The agent is trained insufficiently using TRPO (Trust Region Policy Optimization) in a dense environment (where rewards are abundant and provide more feedback).
+- After this partial training, a random trajectory is sampled from the agent’s behavior.
+- This trajectory becomes the demonstration used for training POfD.
+
+Evaluation Metrics:
+
 The effectiveness of POfD is evaluated using two metrics:
+
 (a) Training Curves
 • The method is run 5 times, each with a different random initialization.
+
 • Training curves are analyzed to evaluate how well POfD facilitates exploration in sparse environments.
+
 • Exploration is critical in sparse environments because rewards are sparse, and the agent must intelligently explore to find the target states.
+
 (b) Empirical Returns
+
 • After training, the learned policy is evaluated by calculating empirical returns:
+
   - Run the policy for 500 episodes (or trials).
   - Record the cumulated rewards over these trials.
   - Compute the average return to quantify the policy's overall performance.
 
 Their Result for cartpole:
 
-![figure_2](/images/paper_res.png)
+![figure_1](/images/paper_res.png)
 
 
-Our Implementation and Results:
+Our Results:
 
 First we run the get_demo_data() function which uses DDQN for generating the demo data and storing it in demo.p pickle file
 
@@ -202,7 +225,7 @@ First we run the get_demo_data() function which uses DDQN for generating the dem
 This will fill the demo memory which will act as expert for the DQFD and POFD training
 
 
-![figure_3](/images/demo_load.png)
+![figure_2](/images/demo_load.png)
 
 Then we pre-train the DQFD agent by loading demo.p into it and then we see the training results and store the scores in dqfd.p pickle file
 
@@ -224,19 +247,19 @@ Below are the results attached for pre-train steps=1400, Learning rate= 0.0008
 
 Config -
 
-![figure_4](/images/config_0008.png)
+![figure_3](/images/config_0008.png)
 
 DQFD -
 
-![figure_5](/images/dqfd_0008.png)
+![figure_4](/images/dqfd_0008.png)
 
 POFD -
 
-![figure_6](/images/pofd_0008.png)
+![figure_5](/images/pofd_0008.png)
 
 Results -
 
-![figure_7](/images/res_0008.png)
+![figure_6](/images/res_0008.png)
 
 
 
