@@ -84,9 +84,9 @@ Policy Network:
 ```
 
 The policy network (πθ) is designed to map states to action probabilities.
-Loss Function:
-Surrogate Loss: tf.minimum(surrogate1, surrogate2) implements the clipped PPO loss.
-Entropy Regularization: - self.lambda2 * tf.reduce_mean(entropy) encourages exploration.
+- Loss Function:
+- Surrogate Loss: tf.minimum(surrogate1, surrogate2) implements the clipped PPO loss.
+- Entropy Regularization: - self.lambda2 * tf.reduce_mean(entropy) encourages exploration.
 
 Discriminator Network:
 
@@ -137,9 +137,11 @@ Policy Gradient Update:
 
 ```
 This step updates the policy using the gradient described in the algorithm:
-Ê_{D_i}[∇_θ log π_θ(a|s)Q'(s,a)] - λ_2 ∇_θ H(π_{θ_i})
+$$
+\hat{E}_{D_i} \left[ \nabla_{\theta} \log \pi_{\theta}(a|s) Q'(s, a) \right] - \lambda_2 \nabla_{\theta} H(\pi_{\theta_i})
+$$
 Here:
-- Q'(s,a) is represented by `discounted_rewards`.
+- Q'(s,a) is represented by discounted_rewards.
 - The first term adjusts the policy based on action-state probabilities and discounted rewards.
 - The second term regularizes the policy entropy, encouraging exploration.
 
@@ -211,7 +213,7 @@ The effectiveness of POfD is evaluated using two metrics:
 
 Their Result for cartpole:
 
-![figure_1](/images/paper_res.png)
+<img src="/images/paper_res.png" alt="Paper Results" width="600" />
 
 
 Our Results:
@@ -225,7 +227,7 @@ First we run the get_demo_data() function which uses DDQN for generating the dem
 This will fill the demo memory which will act as expert for the DQFD and POFD training
 
 
-![figure_2](/images/demo_load.png)
+![figure_1](/images/demo_load.png)
 
 Then we pre-train the DQFD agent by loading demo.p into it and then we see the training results and store the scores in dqfd.p pickle file
 
@@ -247,19 +249,19 @@ Below are the results attached for pre-train steps=1400, Learning rate= 0.0008
 
 Config -
 
-![figure_3](/images/config_0008.png)
+![figure_2](/images/config_0008.png)
 
 DQFD -
 
-![figure_4](/images/dqfd_0008.png)
+![figure_3](/images/dqfd_0008.png)
 
 POFD -
 
-![figure_5](/images/pofd_0008.png)
+![figure_4](/images/pofd_0008.png)
 
 Results -
 
-![figure_6](/images/res_0008.png)
+![figure_5](/images/res_0008.png)
 
 
 
