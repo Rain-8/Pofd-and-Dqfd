@@ -71,7 +71,7 @@ Finally, we can use this function to show the difference between Double DQN and 
 
 
 
-##POFD vs DQFD
+## POFD vs DQFD
 
 We use Google Deepmind's reasearch on - "Deep Q-learning from Demonstrations" and "Policy Optimization with Demonstrations" from ICML 2018 on the cartpole environment.
 
@@ -85,7 +85,7 @@ CartPole-v1 is one of OpenAI’s environments that are open source. The “cartp
 
 The only forces that can be applied are +1 and -1, which translates to a movement of either left or right. If the cart moves more than 2.4 units from the center the episode is over. If the angle is moved more than 15 degrees from the vertical the episode is over. The reward is +1 for every timestamp that the episode is not over.
 
-![figure_0](C:\Users\SowmyaG\projects\cartpole\DQfD\images\cartpole.png)
+![figure_0](/images/cartpole.png)
 
 We have structured our model as follows- 
 ```
