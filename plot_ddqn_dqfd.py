@@ -59,7 +59,7 @@ try:
     with open('ddqn_mean_scores.p', 'rb') as f:
         ddqn_scores = pickle.load(f)
 
-    with open('ddqn_mean_scores_temp.p', 'rb') as f:
+    with open('dqfd.p', 'rb') as f:
         dqfd_scores = pickle.load(f)
 
     # Print a sample of the scores for verification

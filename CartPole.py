@@ -16,26 +16,8 @@ import itertools
 import argparse
 import psutil
 import time
+from gym.wrappers import Monitor
 
-# # Initialize argument parser
-# parser = argparse.ArgumentParser(description="Run POfDV2 or DQfD with demo data")
-# parser.add_argument("--agent", type=str, choices=["POfDV2", "DQfD"], required=True, help="Specify the agent to run (POfDV2 or DQfD)")
-# parser.add_argument("--demo_path", type=str, help="Path to the demo data file (e.g., demo.p)")
-
-# # Parse arguments
-# args = parser.parse_args()
-
-
-# Initialize argument parser
-# parser = argparse.ArgumentParser(description="Run POfDV2, DQfD, or populate demo data with DDQN")
-# parser.add_argument("--agent", type=str, choices=["POfDV2", "DQfD", "DDQN"], required=True,
-#                     help="Specify the agent to run (POfDV2, DQfD, or DDQN to populate demo data)")
-# parser.add_argument("--demo_path", type=str, default="demo.p", help="Path to save or load demo data (default: demo.p)")
-# parser.add_argument("--env", type=str, default="CartPole-v1", help="Gym environment to use (default: CartPole-v1)")
-# parser.add_argument("--episodes", type=int, default=300, help="Number of episodes to train or populate (default: 300)")
-
-# # Parse arguments
-# args = parser.parse_args()
 
 # extend [n_step_reward, n_step_away_state] for transitions in demo
 def set_n_step(container, n):
@@ -89,12 +71,6 @@ def get_demo_data(env):
         pickle.dump(agent.demo_buffer, f, protocol=2)
 
 
-# # Main entry point
-# if args.agent == "DDQN":
-#     env = gym.make(args.env)
-#     get_demo_data(env)
-# else:
-#     print(f"Agent {args.agent} not supported for demo data population.")
 
 
 def run_DDQN(index, env):
@@ -347,85 +323,42 @@ def run_POfD(index, env, demo_transitions=None):
 
     return scores, metrics
 
+def run_and_record_best(env, agent, num_episodes=300):
+    recorder = BestEpisodesRecorder(max_episodes=5)
+
+    for episode in range(num_episodes):
+        done = False
+        score = 0
+        state = env.reset()
+        trajectory = []
+
+        while not done:
+            action = agent.sample_action(state)  # Replace with your action logic
+            next_state, reward, done, _ = env.step(action)
+            trajectory.append((state, action, reward))
+            state = next_state
+            score += reward
+
+        recorder.add_episode(score, trajectory)
+
+        print(f"Episode: {episode}, Score: {score}")
+
+    return recorder.get_best_episodes()
 
 
+def replay_and_record(env, best_episodes):
+    # Wrap the environment with Monitor to record video
+    env = Monitor(env, './videos', force=True)
 
+    for score, trajectory in best_episodes:
+        state = env.reset()
+        for state, action, _ in trajectory:
+            env.render()
+            state, _, done, _ = env.step(action)
+            if done:
+                break
 
-# extend [n_step_reward, n_step_away_state] for transitions in demo
-# def set_n_step(container, n):
-#     t_list = list(container)
-#     # accumulated reward of first (trajectory_n-1) transitions
-#     n_step_reward = sum([t[2] * Config.GAMMA**i for i, t in enumerate(t_list[0:min(len(t_list), n) - 1])])
-#     for begin in range(len(t_list)):
-#         end = min(len(t_list) - 1, begin + Config.trajectory_n - 1)
-#         n_step_reward += t_list[end][2]*Config.GAMMA**(end-begin)
-#         # extend[n_reward, n_next_s, n_done, actual_n]
-#         t_list[begin].extend([n_step_reward, t_list[end][3], t_list[end][4], end-begin+1])
-#         n_step_reward = (n_step_reward - t_list[begin][2])/Config.GAMMA
-#     return t_list
-
-
-# def get_demo_data(env):
-#     # env = wrappers.Monitor(env, '/tmp/CartPole-v0', force=True)
-#     # agent.restore_model()
-#     with tf.variable_scope('get_demo_data'):
-#         agent = DQfDDDQN(env, DDQNConfig())
-
-#     e = 0
-#     while True:
-#         done = False
-#         score = 0  # sum of reward in one episode
-#         state = env.reset()
-#         demo = []
-#         while done is False:
-#             action = agent.egreedy_action(state)  # e-greedy action for train
-#             next_state, reward, done, _ = env.step(action)
-#             score += reward
-#             reward = reward if not done or score == 499 else -100
-#             agent.perceive([state, action, reward, next_state, done, 1.0])  # 0. means it is not a demo data
-#             demo.append([state, action, reward, next_state, done, 1.0])  # record the data that could be expert-data
-#             agent.train_Q_network(update=False)
-#             state = next_state
-#         if done:
-#             if score >= 500:  # expert demo data
-#                 demo = set_n_step(demo, Config.trajectory_n)
-#                 agent.demo_buffer.extend(demo)
-#                 print(f"Added {len(demo)} transitions to demo buffer. Current size: {len(agent.demo_buffer)}")
-#             agent.sess.run(agent.update_target_net)
-#             print("episode:", e, "  score:", score, "  demo_buffer:", len(agent.demo_buffer),
-#                   "  memory length:", len(agent.replay_buffer), "  epsilon:", agent.epsilon)
-#             if len(agent.demo_buffer) >= Config.demo_buffer_size:
-#                 agent.demo_buffer = deque(itertools.islice(agent.demo_buffer, 0, Config.demo_buffer_size))
-#                 break
-#         e += 1
-
-#     with open(Config.DEMO_DATA_PATH, 'wb') as f:
-#         pickle.dump(agent.demo_buffer, f, protocol=2)
-
-
-
-
-# if __name__ == '__main__':
-#     parser = argparse.ArgumentParser(description="Run DDQN Training")
-#     args = parser.parse_args()
-   
-#     if args.agent == "DDQN":
-#         env = gym.make(Config.ENV_NAME)
-#         env = wrappers.Monitor(env, '/tmp/CartPole-v0', force=True)
-#         # ------------------------ get demo scores by DDQN -----------------------------
-#         get_demo_data(env)
-#         # --------------------------  get DDQN scores ----------------------------------
-#         ddqn_sum_scores = np.zeros(Config.episode)
-#         for i in range(Config.iteration):
-#             scores = run_DDQN(i, env)
-#             ddqn_sum_scores = np.array([a + b for a, b in zip(scores, ddqn_sum_scores)])
-#         ddqn_mean_scores = ddqn_sum_scores / Config.iteration
-#         with open('./ddqn_mean_scores.p', 'wb') as f:
-#             pickle.dump(ddqn_mean_scores, f, protocol=2)
-#         with open('./ddqn_mean_scores.p', 'rb') as f:
-#             ddqn_mean_scores = pickle.load(f)    
-#         env.close()
-#         gym.upload('/tmp/carpole_DDQN-1', api_key='sk_VcAt0Hh4RBiG2yRePmeaLA')
+    env.close()
 
 if __name__ == '__main__':
     # Initialize argument parser
@@ -441,6 +374,9 @@ if __name__ == '__main__':
 
     # Load the specified environment
     env = gym.make(args.env)
+    
+    #env = Monitor(env, './videos', force=True)  # Add this line to save videos
+    env = wrappers.Monitor(env, '/tmp/CartPole-v1', force=True)  # Optional for monitoring logs
 
     if args.agent == "DDQN":
         # Run DDQN to populate demo.p
