@@ -1,3 +1,19 @@
+## Disclaimer
+
+Compatibility:
+
+This repository is specifically designed to work with older versions of Python and its dependencies:
+
+- Python Version: 3.7
+- Gym Version: 0.21.0 (or compatible older versions)
+- TensorFlow Version: 1.15
+- The codebase may not function as expected with newer versions of Python, TensorFlow, Gym, or other dependencies.
+
+Platform Support:
+
+- Windows/Linux: Fully supported with the specified environment. Please make sure you are installing correct versions from requirements.txt
+- MacOS: The repository is not compatible with MacOS due to issues with TensorFlow (AVX instruction support) and environment dependencies.
+
 ## POFD vs DQFD
 
 We use Google Deepmind's reasearch on - "Deep Q-learning from Demonstrations" and "Policy Optimization with Demonstrations" from ICML 2018 on the cartpole environment.
