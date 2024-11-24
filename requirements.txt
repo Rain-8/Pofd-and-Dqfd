@@ -1,6 +1,10 @@
-imageio-ffmpeg
+python==3.7
+imageio-ffmpeg==0.5.1
 pyglet==1.5.27
-python=3.7
-tensorflow=1.15
-matplotlib
+tensorflow==1.15
+matplotlib==3.3.4
 numpy=1.16.4
+gym==0.21.0
+protobuf==3.20.3
+importlib-metadata==4.11.3
+psutil==6.1.0
