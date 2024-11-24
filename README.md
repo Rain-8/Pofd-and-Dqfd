@@ -136,12 +136,12 @@ Policy Gradient Update:
     })
 
 ```
-This step updates the policy using the gradient described in the algorithm:
-$$
+\[
 \hat{E}_{D_i} \left[ \nabla_{\theta} \log \pi_{\theta}(a|s) Q'(s, a) \right] - \lambda_2 \nabla_{\theta} H(\pi_{\theta_i})
-$$
+\]
+
 Here:
-- Q'(s,a) is represented by discounted_rewards.
+- \( Q'(s, a) \) is represented by discounted rewards.
 - The first term adjusts the policy based on action-state probabilities and discounted rewards.
 - The second term regularizes the policy entropy, encouraging exploration.
 
